@@ -1,0 +1,58 @@
+# Archivos de compilación
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+
+# Archivos de Rider / IntelliJ
+.idea/
+*.iml
+
+# Archivos de usuario de Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Configuración de VS Code (si alguien abre el proyecto allí)
+.vscode/
+
+# Paquetes NuGet
+*.nupkg
+packages/
+*.snupkg
+
+# Archivos de respaldo
+*.bak
+*.tmp
+*.swp
+
+# Archivos de configuración locales
+*.dbmdl
+*.jfm
+*.pdb
+
+# Archivos de publicación
+publish/
+*.Publish.xml
+
+# Archivos de pruebas
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Archivos de cache
+_ReSharper.Caches/
+_ReSharper*/
+*.DotSettings.user
+
+# Archivos generados por Rider
+.idea/
+*.ipr
+*.iws
+
+# Archivos de sistema
+Thumbs.db
+ehthumbs.db
+Desktop.ini

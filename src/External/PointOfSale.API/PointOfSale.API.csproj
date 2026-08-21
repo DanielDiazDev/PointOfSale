@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+      <UserSecretsId>dc622bdc-db19-4fb2-93d8-1a262c608505</UserSecretsId>
+      <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
+        <PackageReference Include="Scalar.AspNetCore" Version="2.16.18" />
+        
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PointOfSale.Infrastructure\PointOfSale.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+</Project>
