@@ -1,53 +1,59 @@
-name: Deploy point of sale api
+name: Build, Publish, and Deploy Project to SmarterASP.NET
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  workflow_dispatch:
-
-env:
-  DOTNET_VERSION: '10.0.x'
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  build_and_deploy:
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Source Code
         uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: '10.x'
 
-      - name: Restore
-        run: dotnet restore PointOfSale.sln
+      - name: Restore Dependencies
+        run: dotnet restore
 
-      - name: Build
-        run: dotnet build PointOfSale.sln -c Release --no-restore
+      - name: Build Project
+        run: dotnet build --configuration Release --no-restore
 
-      - name: Install dotnet-ef
+     
+
+      - name: Publish Application
+        run: dotnet publish --configuration Release --no-build --output ./release
+
+      - name: Deploy to SmarterASP.NET
+        shell: powershell
+        env:
+          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+          JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
+          JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
+          JWT_KEY: ${{ secrets.JWT_KEY }}
+          WEBSITE_NAME: ${{ secrets.WEBSITE_NAME }}
+          SERVER_COMPUTER_NAME: ${{ secrets.SERVER_COMPUTER_NAME }}
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
-          dotnet tool install --global dotnet-ef
-          dotnet-ef --version
+          $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
 
-      - name: Create EF migration bundle
-        run: dotnet ef migrations bundle --project src/External/PointOfSale.Infrastructure --startup-project src/External/PointOfSale.API -o efbundle
+          $siteName = $env:WEBSITE_NAME
+          $computer = $env:SERVER_COMPUTER_NAME
+          $user     = $env:SERVER_USERNAME
+          $password = $env:SERVER_PASSWORD
 
-      - name: Run migrations
-        run: ./efbundle --connection "${{ secrets.CONNECTION_STRING }}"
+          Write-Host "Deploying to SmarterASP.NET site: $siteName"
 
-      - name: Build and start container
-        run: |
-          DB_CONNECTION_STRING="${{ secrets.CONNECTION_STRING }}" \
-          JWT_KEY="${{ secrets.JWT_KEY }}" \
-          JWT_ISSUER="${{ secrets.JWT_ISSUER }}" \
-          JWT_AUDIENCE="${{ secrets.JWT_AUDIENCE }}" \
-          docker compose up -d --build
-
-      - name: Verify container is running
-        run: docker compose ps && docker compose logs --tail 50 pointofsale-api
+          & $msdeploy `
+            -verb:sync `
+            -source:contentPath="$(pwd)\release" `
+            -dest:contentPath="$siteName",ComputerName="$computer",UserName="$user",Password="$password",AuthType="Basic" `
+            -allowUntrusted `
+            -enableRule:AppOffline `
+            -enableRule:DoNotDeleteRule
