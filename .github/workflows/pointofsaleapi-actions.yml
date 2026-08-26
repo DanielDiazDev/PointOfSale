@@ -29,9 +29,9 @@ jobs:
           JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
           CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
           
-      - name: Publish Application
-        run: dotnet publish PointOfSale/PointOfSale.csproj --configuration Release --no-build --output release
-
+      - name: Publish
+        run: dotnet publish --configuration Release --output ./publish --runtime win-x86
+      
       - name: Deploy to MonsterASP.NET via WebDeploy
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
         with:
@@ -39,6 +39,4 @@ jobs:
           server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
           server-username: ${{ secrets.SERVER_USERNAME }}
           server-password: ${{ secrets.SERVER_PASSWORD }}
-          source-path: release
-          target-path: ""
-      
+          
