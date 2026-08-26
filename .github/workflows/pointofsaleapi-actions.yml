@@ -30,7 +30,7 @@ jobs:
           CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
           
       - name: Publish Application
-        run: dotnet publish --configuration Release --no-build --output ./release
+        run: dotnet publish PointOfSale/PointOfSale.csproj --configuration Release --no-build --output release
 
       - name: Deploy to MonsterASP.NET via WebDeploy
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
@@ -39,5 +39,6 @@ jobs:
           server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
           server-username: ${{ secrets.SERVER_USERNAME }}
           server-password: ${{ secrets.SERVER_PASSWORD }}
-          source-path: ${{ github.workspace }}/release
+          source-path: release
           target-path: ""
+      
