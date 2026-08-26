@@ -1,4 +1,4 @@
-name: Build, Publish, and Deploy Project to SmarterASP.NET
+name: Build, Publish, and Deploy Project to MonsterASP.NET
 
 on:
   push:
@@ -23,37 +23,19 @@ jobs:
 
       - name: Build Project
         run: dotnet build --configuration Release --no-restore
-
-     
-
+        env:
+          JWT_KEY: ${{ secrets.JWT_KEY }}
+          JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
+          JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
+          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+          
       - name: Publish Application
         run: dotnet publish --configuration Release --no-build --output ./release
 
-      - name: Deploy to SmarterASP.NET
-        shell: powershell
-        env:
-          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
-          JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
-          JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
-          JWT_KEY: ${{ secrets.JWT_KEY }}
-          WEBSITE_NAME: ${{ secrets.WEBSITE_NAME }}
-          SERVER_COMPUTER_NAME: ${{ secrets.SERVER_COMPUTER_NAME }}
-          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-        run: |
-          $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-
-          $siteName = $env:WEBSITE_NAME
-          $computer = $env:SERVER_COMPUTER_NAME
-          $user     = $env:SERVER_USERNAME
-          $password = $env:SERVER_PASSWORD
-
-          Write-Host "Deploying to SmarterASP.NET site: $siteName"
-
-          & $msdeploy `
-            -verb:sync `
-            -source:contentPath="$(pwd)\release" `
-            -dest:contentPath="$siteName",ComputerName="$computer",UserName="$user",Password="$password",AuthType="Basic" `
-            -allowUntrusted `
-            -enableRule:AppOffline `
-            -enableRule:DoNotDeleteRule
+      - name: Deploy to MonsterASP.NET via WebDeploy
+        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
+        with:
+          website-name: ${{ secrets.WEBSITE_NAME }}
+          server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
+          server-username: ${{ secrets.SERVER_USERNAME }}
+          server-password: ${{ secrets.SERVER_PASSWORD }}
