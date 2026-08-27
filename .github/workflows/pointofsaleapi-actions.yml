@@ -29,6 +29,14 @@ jobs:
           JWT__Issuer: ${{ secrets.JWT_ISSUER }}
           JWT__Audience: ${{ secrets.JWT_AUDIENCE }}
           
+      - name: Install EF Core Tool
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Run Database Migrations
+        run: dotnet ef database update --project ./src/External/PointOfSale.Infrastructure/PointOfSale.Infrastructure.csproj --startup ./src/External/PointOfSale.API/PointOfSale.API.csproj
+        env:
+          ConnectionStrings__Database: ${{ secrets.CONNECTION_STRING }}
+                
       - name: Publish
         run: dotnet publish --configuration Release --output ./publish --runtime win-x86
       
