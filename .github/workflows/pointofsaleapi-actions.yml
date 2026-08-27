@@ -20,14 +20,14 @@ jobs:
 
       - name: Restore Dependencies
         run: dotnet restore
-
+          
       - name: Build Project
         run: dotnet build --configuration Release --no-restore
         env:
-          JWT_KEY: ${{ secrets.JWT_KEY }}
-          JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
-          JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
-          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+          ConnectionStrings__Database: ${{ secrets.CONNECTION_STRING }}
+          JWT__Key: ${{ secrets.JWT_KEY }}
+          JWT__Issuer: ${{ secrets.JWT_ISSUER }}
+          JWT__Audience: ${{ secrets.JWT_AUDIENCE }}
           
       - name: Publish
         run: dotnet publish --configuration Release --output ./publish --runtime win-x86
