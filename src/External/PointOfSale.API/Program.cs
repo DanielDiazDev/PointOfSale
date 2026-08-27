@@ -17,12 +17,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
-// //TODO: Buscar removerlo a futuro
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-   dbContext.Database.Migrate(); 
-}
+// // //TODO: Buscar removerlo a futuro
+// using (var scope = app.Services.CreateScope())
+// {
+//     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//    dbContext.Database.Migrate(); 
+// }
 app.UseHttpsRedirection();
 
 app.MapModules();
