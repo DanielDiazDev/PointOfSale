@@ -33,7 +33,7 @@ jobs:
         run: dotnet tool install --global dotnet-ef
 
       - name: Run Database Migrations
-        run: dotnet ef database update --project ./src/External/PointOfSale.Infrastructure/PointOfSale.Infrastructure.csproj --startup-project ./src/External/PointOfSale.API/PointOfSale.API.csproj
+        run: dotnet ef database update --project ./src/External/PointOfSale.Infrastructure/PointOfSale.Infrastructure.csproj --startup-project ./src/External/PointOfSale.API/PointOfSale.API.csproj --connection "${{ secrets.CONNECTION_STRING }}"
         env:
           ConnectionStrings__Database: ${{ secrets.CONNECTION_STRING }}
                 
